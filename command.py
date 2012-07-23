@@ -14,18 +14,18 @@ def ovsOpenflowd(name, ip, port, hw_desc = None):
                     ip + ':' + str(port) + \
                     ''' --out-of-band --detach'''
     
-#    os.system(cmdString)
+    os.system(cmdString)
     print cmdString
 
 def ovsDpctl(entity, interface, action = 'add-if'):
     cmdString = 'ovs-dpctl ' + action + ' ' + entity + \
                 ' ' + interface
-#    os.system(cmdString)
+    os.system(cmdString)
     print cmdString
 
 def lxcStart(name):
     cmdString = '''lxc-start -n ''' + name + ''' -d''';
-#    os.system(cmdString)
+    os.system(cmdString)
     print cmdString
 
 
@@ -70,7 +70,7 @@ def cleanFlowSpace():
 #创建slice
 def createSlice(slicename,controller,email):
         cmdString = "fvctl --passwd-file=/root/.fvp createSlice " + slicename + ' ' + controller + ' ' + email
-#        os.system(cmdString)
+        os.system(cmdString)
         print cmdString
 
 #增加flowspace项

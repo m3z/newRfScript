@@ -31,7 +31,7 @@ for OVS in OVSList:
 #createlxc
 lxcList = topology["vms"].keys()
 for lxc in lxcList:
-    shuli.copytree("/var/lib/lxc/base","/var/lib/lxc/"+topology["usrInfo"]["name"]+"_"+lxc)
+    shutli.copytree("/var/lib/lxc/base","/var/lib/lxc/"+topology["usrInfo"]["name"]+"_"+lxc)
     vmInterfaceList=topology["vms"][lxc]["interface"].keys()
     vmInterfaceDict=topology["vms"][lxc]["interface"]
     cmd.createVmConfig(topology["usrInfo"]["name"]+"_"+lxc,vmInterfaceList)
