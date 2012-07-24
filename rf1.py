@@ -19,17 +19,15 @@ for lxc in lxcList:
     time.sleep(10)
     vmInterfaceList=topology["nodes"][lxc]["interface"].keys()
     vmInterfaceDict=topology["nodes"][lxc]["interface"]
-    cmd.createRfConfig(lxc,vmInterfaceList,topology["usrInfo"]["name"])
+    cmd.createRfConfig(lxc,vmInterfaceList)
     cmd.createFstab(lxc)
-    cmd.createRfInterface(lxc,vmInterfaceList,vmInterfaceDict)
+    cmd.createRfInterface(lxc,vmInterfaceList,vmInterfaceDict,address)
     address+=1
     cmd.createDaemons(lxc,topology["nodes"][lxc]["attrs"]["protocol"])
     if(topology["nodes"][lxc]["attrs"]["protocol"]=="rip"):
         cmd.createRipd(lxc,vmInterfaceList,vmInterfaceDict)
-    elif(topology["nodes"][lxc]["attrs"]["protocol"]=="ospf"):
-        ####
-    else:
-        ####
+    #elif(topology["nodes"][lxc]["attrs"]["protocol"]=="ospf"):
+ 
 
 #start rf
 
