@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
 import re
-import shutil
 
 
 def ovsOpenflowd(name, ip, port, hw_desc = None):
@@ -110,7 +109,11 @@ def getOVSName(dpidList):
         OVSNameDict[pList[4]]=dpid
     return OVSNameDict
 
-
+#create lxc dir
+def createLxcDir(lxc):
+    cmdString = "cp -R /var/lib/lxc/base /var/lib/lxc/"+lxc
+    os.system(cmdString)
+    print cmdString
 
 #create lxc vm's config file
 def createVmConfig(lxc,vmInterfaceList):
@@ -146,6 +149,7 @@ lxc.cgroup.devices.allow = c 5:2 rwm
 lxc.cgroup.devices.allow = c 254:0 rwm'''
     f.write(configString)
     f.close()
+    print lxc+" config file created"
 #create lxc vm's fstab file
 def createFstab(lxc):
     fstabString='''proc            /var/lib/lxc/'''+lxc+'''/rootfs/proc         proc    nodev,noexec,nosuid 0 0
@@ -154,6 +158,7 @@ sysfs           /var/lib/lxc/'''+lxc+'''/rootfs/sys          sysfs defaults  0 0
     f=open("/var/lib/lxc/"+lxc+"/fstab",'w')
     f.write(fstabString)
     f.close()
+    print lxc+" fstab file created"
 
 def createVmInterface(lxc,vmInterfaceList,vmInterfaceDict):
     interfaceString='''auto lo
@@ -170,3 +175,4 @@ iface eth'''+str(i)+''' inet static
     f=open("/var/lib/lxc/"+lxc+"/rootfs/etc/network/interfaces",'w')
     f.write(interfaceString)
     f.close()
+    print lxc+" interface file created"

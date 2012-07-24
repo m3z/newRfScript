@@ -1,6 +1,6 @@
 import simplejson as json
 import command as cmd
-import shutil
+
 
 #read json
 f = open("2.json",'r')
@@ -31,7 +31,7 @@ for OVS in OVSList:
 #createlxc
 lxcList = topology["vms"].keys()
 for lxc in lxcList:
-    shutli.copytree("/var/lib/lxc/base","/var/lib/lxc/"+topology["usrInfo"]["name"]+"_"+lxc)
+    cmd.createLxcDir(topology["usrInfo"]["name"]+"_"+lxc)
     vmInterfaceList=topology["vms"][lxc]["interface"].keys()
     vmInterfaceDict=topology["vms"][lxc]["interface"]
     cmd.createVmConfig(topology["usrInfo"]["name"]+"_"+lxc,vmInterfaceList)
