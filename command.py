@@ -111,9 +111,12 @@ def getOVSName(dpidList):
 
 #create lxc dir
 def createLxcDir(lxc):
-    cmdString = "cp -R /var/lib/lxc/base /var/lib/lxc/"+lxc
-    os.system(cmdString)
-    print cmdString
+    if(os.path.exists("/var/lib/lxc/"+lxc)):
+        print dir exist
+    else:
+        cmdString = "cp -R /var/lib/lxc/base /var/lib/lxc/"+lxc
+        os.system(cmdString)
+        print cmdString
 
 #create lxc vm's config file
 def createVmConfig(lxc,vmInterfaceList,usrName):
