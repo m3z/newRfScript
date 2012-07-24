@@ -116,14 +116,14 @@ def createLxcDir(lxc):
     print cmdString
 
 #create lxc vm's config file
-def createVmConfig(lxc,vmInterfaceList):
+def createVmConfig(lxc,vmInterfaceList,usrName):
     f=open("/var/lib/lxc/"+lxc+"/config",'w')
     
     configString="lxc.utsname = "+lxc+"\n"
     for vmInterface in vmInterfaceList:
         configString+='''lxc.network.type = veth
 lxc.network.flags = up
-lxc.network.veth.pair = '''+vmInterface+"\n"
+lxc.network.veth.pair = '''+usrName+"_"+vmInterface+"\n"
     configString+='''
 
 lxc.tty = 4
@@ -163,6 +163,7 @@ sysfs           /var/lib/lxc/'''+lxc+'''/rootfs/sys          sysfs defaults  0 0
 def createVmInterface(lxc,vmInterfaceList,vmInterfaceDict):
     interfaceString='''auto lo
 iface lo inet loopback
+
 '''
     i=0
     for vmInterface in vmInterfaceList:

@@ -1,6 +1,6 @@
 import simplejson as json
 import command as cmd
-
+import time
 
 #read json
 f = open("2.json",'r')
@@ -32,15 +32,17 @@ for OVS in OVSList:
 lxcList = topology["vms"].keys()
 for lxc in lxcList:
     cmd.createLxcDir(topology["usrInfo"]["name"]+"_"+lxc)
+    time.sleep(10)
     vmInterfaceList=topology["vms"][lxc]["interface"].keys()
     vmInterfaceDict=topology["vms"][lxc]["interface"]
-    cmd.createVmConfig(topology["usrInfo"]["name"]+"_"+lxc,vmInterfaceList)
+    cmd.createVmConfig(topology["usrInfo"]["name"]+"_"+lxc,vmInterfaceList,topology["usrInfo"]["name"])
     cmd.createFstab(topology["usrInfo"]["name"]+"_"+lxc)
     cmd.createVmInterface(topology["usrInfo"]["name"]+"_"+lxc,vmInterfaceList,vmInterfaceDict)
     
 #startlxc
 for lxc in lxcList:
-    cmd.lxcStart(lxc)
+    cmd.lxcStart(topology["usrInfo"]["name"]+"_"lxc)
+    time.sleep(1)
 #connect
 for OVS in OVSList:
     interfaceList= topology["nodes"][OVS]["interface"].keys()
