@@ -41,10 +41,10 @@ for lxc in lxcList:
     
 #startlxc
 for lxc in lxcList:
-    cmd.lxcStart(topology["usrInfo"]["name"]+"_"lxc)
+    cmd.lxcStart(topology["usrInfo"]["name"]+"_"+lxc)
     time.sleep(1)
 #connect
 for OVS in OVSList:
     interfaceList= topology["nodes"][OVS]["interface"].keys()
     for interface in interfaceList:
-        cmd.ovsDpctl(OVS,topology["nodes"][OVS]["interface"][interface]["toward"])
+        cmd.ovsDpctl(OVS,topology["usrInfo"]["name"]+"_"+topology["nodes"][OVS]["interface"][interface]["toward"])
