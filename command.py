@@ -256,8 +256,7 @@ iface eth0 inet static
         interfaceString+='''auto eth'''+str(i)+'''
 iface eth'''+str(i)+''' inet static
     address '''+vmInterfaceDict[vmInterface]["ipv4address"]+'''
-    netmask '''+vmInterfaceDict[vmInterface]["netmask"]+'''
-    gateway '''+vmInterfaceDict[vmInterface]["gateway"]+"\n"
+    netmask '''+vmInterfaceDict[vmInterface]["netmask"]+"\n"
         i=i+1
     f=open("/var/lib/lxc/"+lxc+"/rootfs/etc/network/interfaces",'w')
     f.write(interfaceString)
