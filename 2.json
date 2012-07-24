@@ -11,6 +11,7 @@
 			"interface":{
 				"router1.1":{                       
 					"toward":"eth3",
+					"type":"eth",
                     "link":"link2",
 					"ipv4address":"172.31.3.1",
                     "netmask":"255.255.255.0",
@@ -18,6 +19,7 @@
                 },
                 "router1.2":{
 					"toward":"host1.0",
+					"type":"vm",
                     "link":"link1",
 					"ipv4address":"172.31.1.1",
                     "netmask":"255.255.255.0",
@@ -34,6 +36,7 @@
 			"interface":{
 				"router2.1":{
 					"toward":"eth4",
+					"type":"eth",
                     "link":"link2",
 					"ipv4address":"172.31.3.2",
                     "netmask":"255.255.255.0",
@@ -41,6 +44,7 @@
                     },
                 "router2.2":{
 					"toward":"host2.0",
+					"type":"vm",
                     "link":"link3",
 					"ipv4address":"172.31.2.1",
                     "netmask":"255.255.255.0",

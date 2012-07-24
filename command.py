@@ -112,7 +112,7 @@ def getOVSName(dpidList):
 #create lxc dir
 def createLxcDir(lxc):
     if(os.path.exists("/var/lib/lxc/"+lxc)):
-        print dir exist
+        print "dir exist"
     else:
         cmdString = "cp -R /var/lib/lxc/base /var/lib/lxc/"+lxc
         os.system(cmdString)
