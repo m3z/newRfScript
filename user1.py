@@ -1,9 +1,10 @@
 import simplejson as json
 import command as cmd
 import time
-
+import sys
 #read json
-f = open("2.json",'r')
+filename=sys.argv[1]
+f = open(filename,'r')
 jsonfile = ""
 for line in f:
     jsonfile += line

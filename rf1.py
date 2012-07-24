@@ -1,9 +1,10 @@
 import simplejson as json
 import command as cmd
 import time
-
+import sys
 #read json
-f = open("2.json",'r')
+filename=sys.argv[1]
+f = open(filename,'r')
 jsonfile = ""
 for line in f:
     jsonfile += line
@@ -35,7 +36,7 @@ cmd.startNox("switch","6363")
 cmd.startNox("routeflowc","6666")
 cmd.startRf()
 for lxc in lxcList:
-    lxcStart(lxc)
+    cmd.lxcStart(lxc)
 cmd.ovsOpenflowd('dp0', '127.0.0.1', 6666, 'rfovs')
 cmd.ifconfig('dp0', 'up')
 cmd.ovsOpenflowd('br0', '127.0.0.1', 6363)

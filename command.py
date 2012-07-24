@@ -214,7 +214,7 @@ lxc.network.veth.pair = '''+lxc+".0\n"
     for vmInterface in vmInterfaceList:
         configString+='''lxc.network.type = veth
 lxc.network.flags = up
-lxc.network.veth.pair = '''+usrName+"_"+vmInterface+"\n"
+lxc.network.veth.pair = '''+vmInterface+"\n"
     configString+='''
 
 lxc.tty = 4
