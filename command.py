@@ -2,6 +2,16 @@
 import os
 import re
 
+def startNox(component,port):
+    cmdString = '''cd /usr/local/src/RouteFlow/rf-controller/build/src/;
+./nox_core -v -i ptcp:'''+port+" "+component+" -d"
+    os.system(cmdString)
+    print cmdString
+def startRf():
+    cmdString="/usr/local/src/RouteFlow/build/rf-server &"
+    os.system(cmdString)
+    print cmdString
+
 
 def ovsOpenflowd(name, ip, port, hw_desc = None):
     if(hw_desc):
@@ -22,6 +32,17 @@ def ovsDpctl(entity, interface, action = 'add-if'):
     os.system(cmdString)
     print cmdString
 
+
+def ifconfig(interface, action, ip = None, netmask = None):
+    if(ip and netmask):
+        cmdString = 'ifconfig ' + interface + ' ' + action + \
+                    ' ' + ip + ' netmask ' + netmask
+    else:
+        cmdString = 'ifconfig ' + interface + ' ' + action
+
+    os.system(cmdString)
+    print cmdString
+    
 def lxcStart(name):
     cmdString = '''lxc-start -n ''' + name + ''' -d''';
     os.system(cmdString)
@@ -180,3 +201,139 @@ iface eth'''+str(i)+''' inet static
     f.write(interfaceString)
     f.close()
     print lxc+" interface file created"
+
+
+def createRfConfig(lxc,vmInterfaceList):
+    f=open("/var/lib/lxc/"+lxc+"/config",'w')
+    
+    configString="lxc.utsname = "+lxc+'''
+lxc.network.type = veth
+lxc.network.flags = up
+lxc.network.veth.pair = '''+lxc+".0\n"
+
+    for vmInterface in vmInterfaceList:
+        configString+='''lxc.network.type = veth
+lxc.network.flags = up
+lxc.network.veth.pair = '''+usrName+"_"+vmInterface+"\n"
+    configString+='''
+
+lxc.tty = 4
+lxc.pts = 1024
+lxc.rootfs = /var/lib/lxc/'''+lxc+'''/rootfs
+lxc.mount  = /var/lib/lxc/'''+lxc+'''/fstab
+
+lxc.cgroup.devices.deny = a
+# /dev/null and zero
+lxc.cgroup.devices.allow = c 1:3 rwm
+lxc.cgroup.devices.allow = c 1:5 rwm
+# consoles
+lxc.cgroup.devices.allow = c 5:1 rwm
+lxc.cgroup.devices.allow = c 5:0 rwm
+lxc.cgroup.devices.allow = c 4:0 rwm
+lxc.cgroup.devices.allow = c 4:1 rwm
+# /dev/{,u}random
+lxc.cgroup.devices.allow = c 1:9 rwm
+lxc.cgroup.devices.allow = c 1:8 rwm
+lxc.cgroup.devices.allow = c 136:* rwm
+lxc.cgroup.devices.allow = c 5:2 rwm
+# rtc
+lxc.cgroup.devices.allow = c 254:0 rwm'''
+    f.write(configString)
+    f.close()
+    print lxc+" config file created"
+
+def createRfInterface(lxc,vmInterfaceList,vmInterfaceDict,address):
+    interfaceString='''auto lo
+iface lo inet loopback
+
+auto eth0
+iface eth0 inet static
+    address 192.168.1.'''+str(address)+'''
+    netmask 255.255.255.0
+'''
+    i=1
+    for vmInterface in vmInterfaceList:
+        interfaceString+='''auto eth'''+str(i)+'''
+iface eth'''+str(i)+''' inet static
+    address '''+vmInterfaceDict[vmInterface]["ipv4address"]+'''
+    netmask '''+vmInterfaceDict[vmInterface]["netmask"]+'''
+    gateway '''+vmInterfaceDict[vmInterface]["gateway"]+"\n"
+        i=i+1
+    f=open("/var/lib/lxc/"+lxc+"/rootfs/etc/network/interfaces",'w')
+    f.write(interfaceString)
+    f.close()
+    print lxc+" interface file created"
+
+def createDaemons(lxc,protocol):
+    string = '''# This file tells the quagga package which daemons to start.
+#
+# Entries are in the format: <daemon>=(yes|no|priority)
+#   0, "no"  = disabled
+# This file tells the quagga package which daemons to start.
+#
+# Entries are in the format: <daemon>=(yes|no|priority)
+#   0, "no"  = disabled
+#   1, "yes" = highest priority
+#   2 .. 10  = lower priorities
+# Read /usr/share/doc/quagga/README.Debian for details.
+#
+# Sample configurations for these daemons can be found in
+# /usr/share/doc/quagga/examples/.
+#
+# ATTENTION: 
+#
+# When activation a daemon at the first time, a config file, even if it is
+# empty, has to be present *and* be owned by the user and group "quagga", else
+# the daemon will not be started by /etc/init.d/quagga. The permissions should
+# be u=rw,g=r,o=.
+# When using "vtysh" such a config file is also needed. It should be owned by
+# group "quaggavty" and set to ug=rw,o= though. Check /etc/pam.d/quagga, too.
+#
+zebra=yes
+bgpd=no
+ospfd=no
+ospf6d=no
+ripd=no
+ripngd=no
+isisd=no'''
+    string=string.replace(protocol+"d=no",protocol+"d=yes")
+    f=open("/var/lib/lxc/"+lxc+"/rootfs/etc/quagga/daemons","w")
+    f.write(string)
+    f.close()
+    print lxc+" daemons created"
+
+def createRipd(lxc,vmInterfaceList,vmInterfaceDict):
+    string = '''! -*- rip -*-
+!
+! RIPd sample configuration file
+!
+! $Id: ripd.conf.sample,v 1.1 2002/12/13 20:15:30 paul Exp $
+!
+hostname ripd
+password zebra
+!
+! debug rip events
+! debug rip packet
+!
+router rip
+'''
+    for vmInterface in vmInterfaceList:
+        string+=" network "+vmInterfaceDict[vmInterface]["segment"]+"\n"
+    string +='''! network eth0
+! route 10.0.0.0/8
+! distribute-list private-only in eth0
+!
+!access-list private-only permit 10.0.0.0/8
+!access-list private-only deny any
+!
+!log file /var/log/quagga/ripd.log
+!
+log stdout'''
+    f=open("/var/lib/lxc/"+lxc+"/rootfs/etc/quagga/ripd.conf","w")
+    f.write(string)
+    f.close()
+    print lxc+" ripd.conf created"
+
+
+    
+    
