@@ -42,7 +42,8 @@ def ifconfig(interface, action, ip = None, netmask = None):
 
     os.system(cmdString)
     print cmdString
-    
+    
+
 def lxcStart(name):
     cmdString = '''lxc-start -n ''' + name + ''' -d''';
     os.system(cmdString)
@@ -333,6 +334,46 @@ log stdout'''
     f.close()
     print lxc+" ripd.conf created"
 
+def createOspf(lxc,vmInterfaceList,vmInterfaceDict,address):
+    string ='''!
+! Example /etc/zebra/ospfd.conf configuration file
+!
+! Change the hostname to the name of your Access Point
+hostname ospfd
 
-    
+! Set both of these passwords
+password zebra
+!enable password zebra
+
+! Turn off welcome messages
+!no banner motd
+
+! Create an access list that allows access from localhost and nowhere else
+!access-list access permit 127.0.0.1/32
+!access-list access deny any
+
+! Enable access control on the command-line interface
+!line vty
+!access-class access
+
+! Enable routing
+router ospf
+ ospf router-id 192.168.1.'''+str(address)+"\n"
+    for vmInterface in vmInterfaceList:
+        string+=" network "+vmInterfaceDict[vmInterface]["segment"]+" area 0\n"
+    for vmInterface in vmInterfaceList:
+        string+=" no passive-interface "+vmInterfaceDict[vmInterface]["segment"]+"\n"
+    string+='''! Enable authentication
+!area 0 authentication
+
+! Enable RFC-1583 compatibility to avoid routing loops
+compatible rfc1583
+
+! Enable logging
+!log file /var/log/zebra/ospfd.log
+log stdout'''
+    f=open("/var/lib/lxc/"+lxc+"/rootfs/etc/quagga/ospfd.conf","w")
+    f.write(string)
+    f.close()
+    print lxc+" ospfd.conf created"
     

@@ -23,11 +23,13 @@ for lxc in lxcList:
     cmd.createRfConfig(lxc,vmInterfaceList)
     cmd.createFstab(lxc)
     cmd.createRfInterface(lxc,vmInterfaceList,vmInterfaceDict,address)
-    address+=1
     cmd.createDaemons(lxc,topology["nodes"][lxc]["attrs"]["protocol"])
     if(topology["nodes"][lxc]["attrs"]["protocol"]=="rip"):
         cmd.createRipd(lxc,vmInterfaceList,vmInterfaceDict)
-    #elif(topology["nodes"][lxc]["attrs"]["protocol"]=="ospf"):
+    elif(topology["nodes"][lxc]["attrs"]["protocol"]=="ospf"):
+        cmd.createOspf(lxc,vmInterfaceList,vmInterfaceDict,address)
+    address+=1
+    #else
  
 
 #start rf
