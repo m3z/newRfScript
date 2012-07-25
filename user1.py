@@ -20,7 +20,7 @@ for controller in controllerList:
 #startOVS
 OVSList = topology["nodes"].keys()
 for OVS in OVSList:
-    cmd.ovsOpenflowd(OVS,"127.0.0.1","6633")
+    cmd.ovsOpenflowd(topology["usrInfo"]["name"]+"_"+OVS,"127.0.0.1","6633")
 
 #addFlowSpace
 dpidList=cmd.getDpidList()
@@ -49,6 +49,6 @@ for OVS in OVSList:
     interfaceList= topology["nodes"][OVS]["interface"].keys()
     for interface in interfaceList:
         if(topology["nodes"][OVS]["interface"][interface]["type"]=="vm"):
-            cmd.ovsDpctl(OVS,topology["usrInfo"]["name"]+"_"+topology["nodes"][OVS]["interface"][interface]["toward"])
+            cmd.ovsDpctl(topology["usrInfo"]["name"]+"_"+OVS,topology["usrInfo"]["name"]+"_"+topology["nodes"][OVS]["interface"][interface]["toward"])
         else:
-            cmd.ovsDpctl(OVS,topology["nodes"][OVS]["interface"][interface]["toward"])
+            cmd.ovsDpctl(topology["usrInfo"]["name"]+"_"+OVS,topology["nodes"][OVS]["interface"][interface]["toward"])
