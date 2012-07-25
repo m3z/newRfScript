@@ -26,7 +26,7 @@ for OVS in OVSList:
 dpidList=cmd.getDpidList()
 OVSNameDict=cmd.getOVSName(dpidList)
 for OVS in OVSList:
-    cmd.addFlowSpace(OVSNameDict[OVS],"20","all","Slice:"+\
+    cmd.addFlowSpace(OVSNameDict[topology["usrInfo"]["name"]+"_"+OVS],"20","all","Slice:"+\
                      topology["usrInfo"]["name"]+"_"+\
                      topology["nodes"][OVS]["attrs"]["controller"]+"=4")
 #createlxc

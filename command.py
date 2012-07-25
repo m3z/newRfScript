@@ -356,7 +356,14 @@ password zebra
 !line vty
 !access-class access
 
-! Enable routing
+'''
+    for i in range(1,2):
+        string+="interface eth"+str(i)+'''
+ ip ospf dead-interval 20
+ ip ospf hello-interval 5
+'''
+    
+    string+='''! Enable routing
 router ospf
  ospf router-id 192.168.1.'''+str(address)+"\n"
     for vmInterface in vmInterfaceList:
