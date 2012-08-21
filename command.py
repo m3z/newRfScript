@@ -357,7 +357,7 @@ password zebra
 !access-class access
 
 '''
-    for i in range(1,2):
+    for i in range(1,len(vmInterfaceList)+1):
         string+="interface eth"+str(i)+'''
  ip ospf dead-interval 20
  ip ospf hello-interval 5
