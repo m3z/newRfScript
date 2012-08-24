@@ -2,6 +2,7 @@ import simplejson as json
 import command as cmd
 import time
 import sys
+
 #read json
 filename=sys.argv[1]
 f = open(filename,'r')
