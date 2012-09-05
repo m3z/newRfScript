@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
 import os
 import re
-#hehe
+import subprocess
+
 def startNox(component,port):
     cmdString = '''cd /usr/local/src/RouteFlow/rf-controller/build/src/;
 ./nox_core -v -i ptcp:'''+port+" "+component+" -d"
-    os.system(cmdString)
+    subprocess.Popen(cmdString,shell=True)
     print cmdString
 def startRf():
     cmdString="/usr/local/src/RouteFlow/build/rf-server &"
-    os.system(cmdString)
+    subprocess.Popen(cmdString,shell=True)
     print cmdString
 
 
@@ -23,13 +24,13 @@ def ovsOpenflowd(name, ip, port, hw_desc = None):
                     ip + ':' + str(port) + \
                     ''' --out-of-band --detach'''
     
-    os.system(cmdString)
+    subprocess.Popen(cmdString,shell=True)
     print cmdString
 
 def ovsDpctl(entity, interface, action = 'add-if'):
     cmdString = 'ovs-dpctl ' + action + ' ' + entity + \
                 ' ' + interface
-    os.system(cmdString)
+    subprocess.Popen(cmdString,shell=True)
     print cmdString
 
 
@@ -40,44 +41,44 @@ def ifconfig(interface, action, ip = None, netmask = None):
     else:
         cmdString = 'ifconfig ' + interface + ' ' + action
 
-    os.system(cmdString)
+    subprocess.Popen(cmdString,shell=True)
     print cmdString
     
 
 def lxcStart(name):
     cmdString = '''lxc-start -n ''' + name + ''' -d''';
-    os.system(cmdString)
+    subprocess.Popen(cmdString,shell=True)
     print cmdString
 
 
 #启动flowvisor
 def runFlowVisor():
         cmdString = "/usr/local/sbin/flowvisor /usr/local/etc/flowvisor/flowvisor-config.xml &"
-        os.system(cmdString)
+        subprocess.Popen(cmdString,shell=True)
         print cmdString
 
 #删除指定slice
 def delSlices(slicename):
         cmdString = 'fvctl --passwd-file=/root/.fvp deleteSlice ' + slicename
-        os.system(cmdString)
+        subprocess.Popen(cmdString,shell=True)
         print cmdString
 
 #删除所有slice
 def cleanSlices():
         cmdString = "fvctl --passwd-file=/root/.fvp listSlices"
-        sList = os.popen(cmdString).readlines()
+        sList = subprocess.Popen(cmdString,shell=True).stdout.readlines()
         for sli in sList:
                 sli = re.split(': ',sli)[1].rstrip()
                 if(sli!='fvadmin' and sli!=None):
                         delSlices(sli)
                         #cmdString = "fvctl --passwd-file=/root/.fvp deleteSlice " + sli
-                        #os.system(cmdString)
+                        #subprocess.Popen(cmdString,shell=True)
                         #print cmdString
 
 #删除flowspace指定项
 def delFlowSpace(flowspaceID):
         cmdString = "fvctl --passwd-file=/root/.fvp removeFlowSpace "+ flowspaceID
-        os.system(cmdString)
+        subprocess.Popen(cmdString,shell=True)
         print cmdString
 #清空flowspace
 def cleanFlowSpace():
@@ -91,13 +92,13 @@ def cleanFlowSpace():
 #创建slice
 def createSlice(slicename,controller,email):
         cmdString = "fvctl --passwd-file=/root/.fvp createSlice " + slicename + ' ' + controller + ' ' + email
-        os.system(cmdString)
+        subprocess.Popen(cmdString,shell=True)
         print cmdString
 
 #增加flowspace项
 def addFlowSpace(dpid,priority,flow_match,sliceActions):
         cmdString = 'fvctl --passwd-file=/root/.fvp addFlowSpace '+dpid+' '+priority+' '+flow_match+' '+sliceActions
-        os.system(cmdString)
+        subprocess.Popen(cmdString,shell=True)
         print cmdString
 
 #获取所有设备的dpid返回一个列表
@@ -137,7 +138,7 @@ def createLxcDir(lxc):
         print "dir exist"
     else:
         cmdString = "cp -R /var/lib/lxc/base /var/lib/lxc/"+lxc
-        os.system(cmdString)
+        subprocess.Popen(cmdString,shell=True)
         print cmdString
 
 #create lxc vm's config file
