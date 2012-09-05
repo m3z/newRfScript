@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import re
-
+#hehe
 def startNox(component,port):
     cmdString = '''cd /usr/local/src/RouteFlow/rf-controller/build/src/;
 ./nox_core -v -i ptcp:'''+port+" "+component+" -d"
